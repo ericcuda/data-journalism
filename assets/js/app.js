@@ -6,7 +6,7 @@ const svgHeight = 500;
 const margin = {
     top: 20,
     right: 40,
-    bottom: 80,
+    bottom: 100,
     left: 100
 };
 
@@ -80,8 +80,7 @@ function renderYAxes(newYScale, yAxis) {
     return yAxis;
 }
 
-// function used for updating circles group with a transition to
-// new circles
+// function used for updating circles group (circlesGroup) with a transition to new circles
 // circlesGroup knows about all of the elements..
 function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
 
@@ -97,8 +96,26 @@ function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
     circlesGroup.transition()
         .duration(1000)
         .attr("cy", d => newYScale(d[chosenYAxis]))
-    //.attr("y", d => newYScale(d[chosenYAxis]))
+    // .attr("y", d => newYScale(d[chosenYAxis]))
     return circlesGroup;
+}
+
+// function used for updating state text (textGroup)  with a transition to new text
+// textGroup knows about all of the elements..
+function renderXText(textGroup, newXScale, chosenXAxis) {
+
+    textGroup.transition()
+        .duration(1000)
+        .attr("x", d => newXScale(d[chosenXAxis]))
+    return textGroup;
+}
+
+function renderYText(textGroup, newYScale, chosenYAxis) {
+
+    textGroup.transition()
+        .duration(1000)
+        .attr("y", d => newYScale(d[chosenYAxis]))
+    return textGroup;
 }
 
 // function used for updating circles group with new tooltip when hovering
@@ -128,7 +145,6 @@ function updateToolTip(chosenXAxis, circlesGroup, chosenYAxis) {
     }
     console.log("labely: " + labely)
     console.log("label: " + label)
-
 
     const toolTip = d3.tip()
         .attr("class", "d3-tip")
@@ -183,10 +199,7 @@ function updateToolTip(chosenXAxis, circlesGroup, chosenYAxis) {
     let xLinearScale = xScale(peopleData, chosenXAxis);
 
     // Create y scale function
-    // let yLinearScale = d3.scaleLinear()
-    //     .domain([0, (d3.max(peopleData, d => d.healthcare) * 1.1)])
-    //     .range([height, 0]);
-    let yLinearScale = yScale(peopleData, chosenYAxis);  //ned to use a fn since the y scale can also change
+    let yLinearScale = yScale(peopleData, chosenYAxis);  //need to use a fn since the y scale can also change
 
     // Create initial axis functions
     let bottomAxis = d3.axisBottom(xLinearScale);
@@ -206,71 +219,34 @@ function updateToolTip(chosenXAxis, circlesGroup, chosenYAxis) {
         .call(leftAxis);
 
     // append initial circles
-    var circlesGroup = chartGroup.selectAll("circle")   //select all circle elements
+    //var circlesGroup = chartGroup.selectAll("circle")   //select all circle elements
+    //stateCircle formatting defined in d3Style.css
+    var circlesGroup = chartGroup.selectAll("stateCircle")   //select all circle elements
+
         .data(peopleData)    //bind to the data 
         .enter()
         .append("circle")
         .attr("cx", d => xLinearScale(d[chosenXAxis]))
         .attr("cy", d => yLinearScale(d[chosenYAxis]))
         .attr("r", 12)
-        .attr("fill", "#788dc3")
-        .attr("opacity", ".5")
+        //.attr("fill", "#788dc3")
+        //.attr("opacity", ".5")
+        .classed("stateCircle", true)
 
-    // .enter()
-    // .append("text")
-    // .attr("x", d => xLinearScale(d[chosenXAxis]))
-    // .attr("y", d => yLinearScale(d[chosenYAxis]))
-    // .attr("font-size", "11px")
-    // .attr("text-anchor", "middle")
-    // .attr('fill', 'white')
-    // .text(d => (d.abbr));
-
-
-
-    // circlesGroup.append("text")
-    //     .attr("x", d => xLinearScale(d[chosenXAxis]))
-    //     .attr("y", d => yLinearScale(d[chosenYAxis]))
-    //     .attr("dx", 12)
-    //     .attr("font-size", "12px")
-    //     .attr("text-anchor", "middle")
-    //     .attr('fill', 'white')
-    //     .text(d => (d.abbr));
-
-    // var circlesGroup = chartGroup.selectAll()
-    //     .data(peopleData)
-    //     .enter()
-    //     .append("text")
-    //     .attr("x", d => xLinearScale(d[chosenXAxis]))
-    //     .attr("y", d => yLinearScale(d[chosenYAxis]))
-    //     .style("font-size", "11px")
-    //     .style("text-anchor", "middle")
-    //     .style('fill', 'white')
-    //     .text(d => (d.abbr));
-
-
-
-    // chartGroup.selectAll("text")
-    //     .data(peopleData)
-    //     .enter()
-    //     .append("text")
-    //     .attr("x", d => xLinearScale(d[chosenXAxis]))
-    //     .attr("y", d => yLinearScale(d.healthcare))
-    //     .attr("font-size", "12px")
-    //     .attr("text-anchor", "middle")
-    //     .attr('fill', 'white')
-    //     .text(d => (d.abbr));
-
-    // circlesGroup.selectAll("text")
-    //     .data(peopleData)
-    //     .enter()
-    //     .append("text")
-    //     .text(d => (d.abbr))
-    //     .attr("x", d => xLinearScale(d[chosenXAxis]))
-    //     .attr("y", d => yLinearScale(d[chosenYAxis]))
-    //     .style("font-size", "12px")
-    //     .style("text-anchor", "middle");
-
-
+    // create textGroup, append a statetext field for labels for the circles
+    //statetext format defined in d3Style.css 
+    var textGroup = chartGroup.selectAll(".stateText")
+        .data(peopleData)    //bind to the data 
+        .enter()
+        .append("text")
+        .attr("x", d => xLinearScale(d[chosenXAxis]))
+        .attr("y", d => yLinearScale(d[chosenYAxis]))
+        .attr("dy", 3)
+        .style("font-size", "12px")
+        .style("text-anchor", "middle")
+        //.attr("fill", "white")
+        .text(d => (d.abbr))
+        .classed("stateText", true);
 
     // Create group for  3 x- axis labels
     const labelsXGroup = chartGroup.append("g")
@@ -328,16 +304,6 @@ function updateToolTip(chosenXAxis, circlesGroup, chosenYAxis) {
         //.classed("axis-text", true)
         .text("Lacks Healthcare (%)");
 
-
-    // // append y axis
-    // chartGroup.append("text")
-    //     .attr("transform", "rotate(-90)")
-    //     .attr("y", 0 - margin.left)
-    //     .attr("x", 0 - (height / 2))
-    //     .attr("dy", "1em")
-    //     .classed("axis-text", true)
-    //     .text("Lacks Healthcare (%)");
-
     // updateToolTip function above csv import
     circlesGroup = updateToolTip(chosenXAxis, circlesGroup, chosenYAxis);
 
@@ -363,6 +329,9 @@ function updateToolTip(chosenXAxis, circlesGroup, chosenYAxis) {
 
                 // updates circles with new x values
                 circlesGroup = renderXCircles(circlesGroup, xLinearScale, chosenXAxis);
+
+                // updates state text labels with new x values
+                textGroup = renderXText(textGroup, xLinearScale, chosenXAxis);
 
                 // updates tooltips with new info
                 circlesGroup = updateToolTip(chosenXAxis, circlesGroup, chosenYAxis);
@@ -427,6 +396,9 @@ function updateToolTip(chosenXAxis, circlesGroup, chosenYAxis) {
 
                 // updates circles with new y values
                 circlesGroup = renderYCircles(circlesGroup, yLinearScale, chosenYAxis);
+
+                // updates state text labels with new y values
+                textGroup = renderYText(textGroup, yLinearScale, chosenYAxis);
 
                 // updates tooltips with new info
                 circlesGroup = updateToolTip(chosenXAxis, circlesGroup, chosenYAxis);
