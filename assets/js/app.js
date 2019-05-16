@@ -1,7 +1,7 @@
 // app.js including the optional challenge segment
 
 const svgWidth = 960;
-const svgHeight = 500;
+const svgHeight = 600;
 
 const margin = {
     top: 20,
@@ -87,7 +87,6 @@ function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
     circlesGroup.transition()
         .duration(1000)
         .attr("cx", d => newXScale(d[chosenXAxis]))
-    //.attr("x", d => newXScale(d[chosenXAxis]))
     return circlesGroup;
 }
 
@@ -96,7 +95,6 @@ function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
     circlesGroup.transition()
         .duration(1000)
         .attr("cy", d => newYScale(d[chosenYAxis]))
-    // .attr("y", d => newYScale(d[chosenYAxis]))
     return circlesGroup;
 }
 
@@ -213,16 +211,14 @@ function updateToolTip(chosenXAxis, circlesGroup, chosenYAxis) {
         .call(bottomAxis);
 
     // append y axis
-    //do a let yAxis here????    //eric
     let yAxis = chartGroup.append("g")
         .classed("y-axis", true)
         .call(leftAxis);
 
     // append initial circles
-    //var circlesGroup = chartGroup.selectAll("circle")   //select all circle elements
-    //stateCircle formatting defined in d3Style.css
+    // var circlesGroup = chartGroup.selectAll("circle")   //select all circle elements
+    // stateCircle formatting defined in d3Style.css
     var circlesGroup = chartGroup.selectAll("stateCircle")   //select all circle elements
-
         .data(peopleData)    //bind to the data 
         .enter()
         .append("circle")
@@ -234,7 +230,7 @@ function updateToolTip(chosenXAxis, circlesGroup, chosenYAxis) {
         .classed("stateCircle", true)
 
     // create textGroup, append a statetext field for labels for the circles
-    //statetext format defined in d3Style.css 
+    // statetext format defined in d3Style.css 
     var textGroup = chartGroup.selectAll(".stateText")
         .data(peopleData)    //bind to the data 
         .enter()
@@ -283,7 +279,6 @@ function updateToolTip(chosenXAxis, circlesGroup, chosenYAxis) {
         .attr("dy", "1em")
         .attr("value", "obesity") // value to grab for event listener
         .classed("inactive", true)  //init
-        //.classed("axis-text", true)
         .text("Obesity (%)");
 
     const smokesLabel = labelsYGroup.append("text")
@@ -292,7 +287,6 @@ function updateToolTip(chosenXAxis, circlesGroup, chosenYAxis) {
         .attr("dy", "1em")
         .attr("value", "smokes") // value to grab for event listener
         .classed("inactive", true)   //init
-        //.classed("axis-text", true)
         .text("Smokes (%)");
 
     const healthcareLabel = labelsYGroup.append("text")
@@ -301,7 +295,6 @@ function updateToolTip(chosenXAxis, circlesGroup, chosenYAxis) {
         .attr("dy", "1em")
         .attr("value", "healthcare") // value to grab for event listener
         .classed("active", true)  //init to true at first
-        //.classed("axis-text", true)
         .text("Lacks Healthcare (%)");
 
     // updateToolTip function above csv import
